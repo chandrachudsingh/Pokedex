@@ -1,7 +1,21 @@
+import React from "react";
+import HomePage from "./Components/HomePage";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 function App() {
   return (
     <div className="App">
-      <h1>Pokedex</h1>
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<HomePage />} />
+          {/* <Route path="/pokemons" element={<PokemonListPage />} /> */}
+          {/* <Route
+            path="/pokemons/:pokemon_name"
+            element={<PokemonDetailsPage />}
+          /> */}
+          {/* <Route path="/bookmarks" element={<BookmarkPage />} /> */}
+        </Routes>
+      </Router>
     </div>
   );
 }
