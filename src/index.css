@@ -8,10 +8,151 @@
 
 :root {
   /* GLOBAL VARIABLES */
+
+  /* colors */
+  --primary-color: #d9e3f1;
+
+  --orange-color: #ffa600;
+  --font-blue-color: #354165;
+  --pokedex-btn-color: #373e57;
+
+  /* font family */
+  --primary-font: "Nunito", sans-serif;
+  --secondary-font: ;
+
+  /* box shadow */
+  --box-shadow-null: 0px 0px 0px var(--primary-color),
+    -0px -0px 0px var(--primary-color);
+  --box-shadow: 5px 5px 10px rgba(55, 94, 148, 0.2),
+    -5px -5px 10px rgba(255, 255, 255, 0.4);
+  --box-shadow-inset: inset 3px 3px 8px rgba(55, 94, 148, 0.2),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.4);
+  --box-shadow2: 5px 5px 10px rgba(0, 0, 0, 0.2),
+    -5px -5px 10px rgba(255, 255, 255, 0.1);
+  --box-shadow2-inset: inset 2px 2px 8px rgba(55, 94, 148, 0.2);
+
+  /* border radius */
+  --border-radius-circular: 50%;
+  --border-radius1: 10px;
+  --border-radius2: 20px;
+
+  /* transition */
+  --transition1: all 0.1s ease-in-out;
+  --transition2: all 0.2s ease-in-out;
 }
 
 body {
   font-family: var(--primary-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ----------------- Home/Search Page ----------------- */
+
+.home-page {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  padding: 1rem 1.8rem;
+}
+
+/* pokemon logo */
+.pokemon-logo-container {
+  text-align: center;
+  margin: 100px 0;
+}
+
+.pokemon-logo-container img {
+  width: 300px;
+  user-select: none;
+}
+
+/* pokemon search field */
+.search-field {
+  display: flex;
+  font-family: var(--primary-font);
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.search-field input {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius2);
+  box-shadow: var(--box-shadow);
+  color: var(--font-blue-color);
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s ease-in-out;
+  height: 60px;
+  width: 400px;
+}
+
+.search-field input:focus {
+  box-shadow: var(--box-shadow-null), var(--box-shadow-inset);
+  outline: none;
+}
+
+.search-btn {
+  background-color: var(--orange-color);
+  border: none;
+  border-radius: var(--border-radius-circular);
+  box-shadow: var(--box-shadow2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition2);
+  height: 60px;
+  width: 60px;
+}
+
+.search-btn:active {
+  box-shadow: var(--box-shadow-null), var(--box-shadow2-inset);
+}
+
+.search-icon {
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* pokedex btn */
+
+.pokedex-btn {
+  background-color: var(--pokedex-btn-color);
+  border-radius: var(--border-radius1);
+  box-shadow: var(--box-shadow2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: auto;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--transition1);
+  height: 100px;
+  width: 300px;
+}
+
+.pokedex-btn:active {
+  box-shadow: var(--box-shadow-null), var(--box-shadow2-inset);
+}
+
+.pokedex-btn p {
+  font-size: 1.8rem;
+  font-weight: 800;
+  z-index: 10;
+}
+
+.pokedex-btn img {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  opacity: 0.5;
+  width: 140px;
 }
