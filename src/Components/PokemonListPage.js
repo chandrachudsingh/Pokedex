@@ -40,6 +40,18 @@ const PokemonListPage = () => {
     }
   };
 
+  const handleInfiniteScroll = async () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const innerHeight = window.innerHeight;
+    const scrollTop = document.documentElement.scrollTop;
+
+    if (innerHeight + scrollTop >= scrollHeight) {
+      setOffset((prevOffset) => {
+        return prevOffset + pageSize;
+      });
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     const value = getQueryParams();
@@ -49,6 +61,11 @@ const PokemonListPage = () => {
       getAllPokemons(value);
     }
   }, [offset]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleInfiniteScroll);
+    return () => window.removeEventListener("scroll", handleInfiniteScroll);
+  }, []);
 
   return (
     <div className="pokemon-list-page">
