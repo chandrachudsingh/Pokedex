@@ -1,6 +1,5 @@
 import React from "react";
 import PokemonCard from "./PokemonCard";
-import Pokeball from "../Images/pokeball2.png";
 import { MdArrowUpward } from "react-icons/md";
 
 const ResultPokemons = ({
