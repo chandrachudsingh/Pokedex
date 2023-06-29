@@ -1,43 +1,237 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import PokemonCard from "./PokemonCard";
-import { MdCatchingPokemon } from "react-icons/md";
+import React, { useEffect, useState } from "react";
 import PokemonFilterSection from "./PokemonFilterSection";
+import ResultPokemons from "./ResultPokemons";
+import { useSearchParams } from "react-router-dom";
 
 const PokemonListPage = () => {
-  const pageSize = 10;
-
+  const [page, setPage] = useState(1);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [searchItem, setSearchItem] = useState("");
+  const [scrollLoading, setScrollLoading] = useState(false);
+  const [pokemonsLoading, setPokemonsLoading] = useState(false);
   const [pokemons, setPokemons] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [searchPokemons, setSearchPokemons] = useState([]);
+  const [displayPokemons, setDisplayPokemons] = useState([]);
+  const [abilityPokemons, setAbilityPokemons] = useState([]);
+  const [groupPokemons, setGroupPokemons] = useState([]);
+  const [habitatPokemons, setHabitatPokemons] = useState([]);
+  const [locationPokemons, setLocationPokemons] = useState([]);
+  const [typePokemons, setTypePokemons] = useState([]);
+  const pageSize = 10;
+  const api = "https://pokeapi.co/api/v2/";
 
-  const url = "https://pokeapi.co/api/v2/pokemon";
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const getSearchValue = useMemo(() => searchParams.get("value"));
-
   const getQueryParams = () => {
-    return getSearchValue;
+    let params = {};
+    searchParams.forEach((value, key) => {
+      params = { ...params, [key]: value.toLowerCase() };
+    });
+    return params;
   };
 
-  const getAllPokemons = async (searchVal) => {
-    try {
-      if (!searchVal) {
-        const response = await fetch(
-          url + `?offset=${offset}&limit=${pageSize}`
-        );
-        const result = await response.json();
-        const pokemonList = result.results;
-        setPokemons((prevPokemons) => [...prevPokemons, ...pokemonList]);
-      } else {
-        const data = [{ name: searchVal, url: url + "/" + searchVal }];
-        setPokemons(data);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+  const getResults = async (url, searchText) => {
+    const response = await fetch(url);
+    const result = await response.json();
+    const pokemonList = result.results;
+    const list = pokemonList.filter((pokemon) => pokemon.name === searchText);
+    return list;
+  };
+
+  const getParamSearch = async () => {
+    setPokemonsLoading(true);
+    let search = searchParams.get("search");
+    if (search) {
+      search = search.toLowerCase();
     }
+    // search by name
+    if (!search || search === "pokedex") {
+      setSearchItem({
+        name: "pokedex",
+        url: api + "pokemon/?offset=0&limit=10000",
+      });
+    } else {
+      const pokemonList = await getResults(
+        api + "pokemon/?offset=0&limit=10000",
+        search
+      );
+      if (pokemonList.length > 0) {
+        setSearchItem(pokemonList[0]);
+      } else {
+        // search by ability
+        const pokemonList2 = await getResults(
+          api + "ability/?offset=0&limit=1000",
+          search
+        );
+        if (pokemonList2.length > 0) {
+          setSearchItem(pokemonList2[0]);
+        } else {
+          // search by move
+          const pokemonList3 = await getResults(
+            api + "move/?offset=0&limit=1000",
+            search
+          );
+          if (pokemonList3.length > 0) {
+            setSearchItem(pokemonList3[0]);
+          } else {
+            setSearchItem([]);
+          }
+        }
+      }
+    }
+  };
+
+  const getAllFilteredPokemons = async () => {
+    setPokemonsLoading(true);
+    if (!searchItem) {
+      return;
+    }
+
+    const params = getQueryParams();
+
+    if (searchItem.name === "pokedex") {
+      const response = await fetch(searchItem.url);
+      let result = await response.json();
+      result = result.results;
+      setSearchPokemons(result);
+    } else {
+      if (searchItem.length === 0) {
+        setPokemonsLoading(false);
+        setSearchPokemons([]);
+        return;
+      }
+      const searchType = searchItem.url
+        .replace(api, "")
+        .replaceAll("/", "")
+        .replace(/[0-9]/g, "");
+      if (searchType === "pokemon") {
+        setSearchPokemons([searchItem]);
+      } else {
+        const response = await fetch(searchItem.url);
+        let result = await response.json();
+        if (searchType === "ability") {
+          result = result.pokemon;
+          if (result.length === 0) {
+            setPokemonsLoading(false);
+          }
+          const pokemonList = result.map(({ pokemon }) => pokemon);
+          setSearchPokemons(pokemonList);
+        } else {
+          result = result.learned_by_pokemon;
+          if (result.length === 0) {
+            setPokemonsLoading(false);
+          }
+          setSearchPokemons(result);
+        }
+      }
+    }
+
+    if ("ability" in params) {
+      const url = api + `ability/${params.ability}`;
+      const response = await fetch(url);
+      let result = await response.json();
+      result = result.pokemon;
+      const pokemonList = result.map(({ pokemon }) => pokemon.name);
+      setAbilityPokemons(pokemonList);
+    } else {
+      setAbilityPokemons([]);
+    }
+
+    if ("group" in params) {
+      const url = api + `egg-group/${params.group}`;
+      const response = await fetch(url);
+      let result = await response.json();
+      result = result.pokemon_species;
+      const pokemonList = result.map((pokemon) => pokemon.name);
+      setGroupPokemons(pokemonList);
+    } else {
+      setGroupPokemons([]);
+    }
+
+    if ("habitat" in params) {
+      const url = api + `pokemon-habitat/${params.habitat}`;
+      const response = await fetch(url);
+      let result = await response.json();
+      result = result.pokemon_species;
+      const pokemonList = result.map((pokemon) => pokemon.name);
+      setHabitatPokemons(pokemonList);
+    } else {
+      setHabitatPokemons([]);
+    }
+
+    if ("location" in params) {
+      const url = api + `location-area/${params.location}`;
+      const response = await fetch(url);
+      let result = await response.json();
+      result = result.pokemon_encounters;
+      const pokemonList = result.map(({ pokemon }) => pokemon.name);
+      setLocationPokemons(pokemonList);
+    } else {
+      setLocationPokemons([]);
+    }
+
+    if ("type" in params) {
+      const url = api + `type/${params.type}`;
+      const response = await fetch(url);
+      let result = await response.json();
+      result = result.pokemon;
+      const pokemonList = result.map(({ pokemon }) => pokemon.name);
+      setTypePokemons(pokemonList);
+    } else {
+      setTypePokemons([]);
+    }
+  };
+
+  const getCommonPokemons = () => {
+    if (searchPokemons.length === 0) {
+      return;
+    }
+
+    let commonPokemons = searchPokemons;
+    if (abilityPokemons.length > 0) {
+      commonPokemons = commonPokemons.filter((pokemon) =>
+        abilityPokemons.includes(pokemon.name)
+      );
+    }
+    if (groupPokemons.length > 0) {
+      commonPokemons = commonPokemons.filter((pokemon) =>
+        groupPokemons.includes(pokemon.name)
+      );
+    }
+    if (habitatPokemons.length > 0) {
+      commonPokemons = commonPokemons.filter((pokemon) =>
+        habitatPokemons.includes(pokemon.name)
+      );
+    }
+    if (locationPokemons.length > 0) {
+      commonPokemons = commonPokemons.filter((pokemon) =>
+        locationPokemons.includes(pokemon.name)
+      );
+    }
+    if (typePokemons.length > 0) {
+      commonPokemons = commonPokemons.filter((pokemon) =>
+        typePokemons.includes(pokemon.name)
+      );
+    }
+    setPokemons(commonPokemons);
+    setPokemonsLoading(false);
+  };
+
+  const addNextPage = () => {
+    const offset = (page - 1) * pageSize;
+    const limit = page * pageSize;
+
+    const newPokemons = pokemons.slice(offset, limit);
+    if (page !== 1) {
+      setIsLastPage(false);
+      setDisplayPokemons((prevPokemons) => [
+        ...new Set([...prevPokemons, ...newPokemons]),
+      ]);
+    } else {
+      setDisplayPokemons(newPokemons);
+      setIsLastPage(true);
+    }
+    setScrollLoading(false);
   };
 
   const handleInfiniteScroll = async () => {
@@ -45,43 +239,58 @@ const PokemonListPage = () => {
     const innerHeight = window.innerHeight;
     const scrollTop = document.documentElement.scrollTop;
 
-    if (innerHeight + scrollTop >= scrollHeight) {
-      setOffset((prevOffset) => {
-        return prevOffset + pageSize;
-      });
+    if (innerHeight + scrollTop + 1 >= scrollHeight) {
+      if (!isLastPage) {
+        setScrollLoading(true);
+        setPage((prevPage) => {
+          return prevPage + 1;
+        });
+      }
     }
   };
-
-  useEffect(() => {
-    setLoading(true);
-    const value = getQueryParams();
-    if (value === null || value === "pokedex") {
-      getAllPokemons("");
-    } else {
-      getAllPokemons(value);
-    }
-  }, [offset]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleInfiniteScroll);
     return () => window.removeEventListener("scroll", handleInfiniteScroll);
   }, []);
 
+  useEffect(() => {
+    getAllFilteredPokemons();
+  }, [searchParams, searchItem]);
+
+  useEffect(() => {
+    getParamSearch();
+  }, []);
+
+  useEffect(() => {
+    getCommonPokemons();
+  }, [
+    searchPokemons,
+    abilityPokemons,
+    groupPokemons,
+    habitatPokemons,
+    locationPokemons,
+    typePokemons,
+  ]);
+
+  useEffect(() => {
+    addNextPage();
+  }, [page, pokemons]);
+
   return (
     <div className="pokemon-list-page">
-      <PokemonFilterSection />
-      <section className="pokemon-list-container">
-        <h1 className="pokemon-list-heading">
-          {getSearchValue === "pokedex" ? "pokédex" : "your pokemon"}
-        </h1>
-        <div className="pokemon-list">
-          {pokemons.map((pokemon) => {
-            const { name, url } = pokemon;
-            return <PokemonCard key={name} name={name} pokemon_url={url} />;
-          })}
-        </div>
-        {loading && <MdCatchingPokemon className="loading-icon" />}
-      </section>
+      <PokemonFilterSection
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+        getQueryParams={getQueryParams}
+        setPage={setPage}
+      />
+      <ResultPokemons
+        pokemons={displayPokemons}
+        getQueryParams={getQueryParams}
+        scrollLoading={scrollLoading}
+        pokemonsLoading={pokemonsLoading}
+      />
     </div>
   );
 };

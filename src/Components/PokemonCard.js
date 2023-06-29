@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdCatchingPokemon } from "react-icons/md";
+import PokemonOpen from "../Images/pokeball-open.png";
+import { Link } from "react-router-dom";
 
 const PokemonCard = ({ name, pokemon_url }) => {
   const [loading, setLoading] = useState(true);
@@ -26,10 +28,14 @@ const PokemonCard = ({ name, pokemon_url }) => {
     setPokemonData({
       id: paddedId,
       name: removeHyphens(name),
-      imgSrc: pokemonImg,
+      imgSrc: pokemonImg ? pokemonImg : PokemonOpen,
       types: formattedTypes,
     });
   };
+
+  // const changeImg = (e) => {
+  //   e.target.src = PokemonOpen;
+  // };
 
   const removeHyphens = (name) => {
     return name.replace("-", " ");
@@ -48,15 +54,24 @@ const PokemonCard = ({ name, pokemon_url }) => {
   if (loading) {
     return (
       <div className="pokemon-card pokeball-loading">
-        {!loading && <MdCatchingPokemon className="loading-icon" />}
+        {loading && <MdCatchingPokemon className="loading-icon" />}
       </div>
     );
   } else {
     const { id, name, imgSrc, types } = pokemonData;
     return (
-      <article key={id} className={`pokemon-card ${types && types[0]}-card`}>
+      <Link
+        to={`/pokemons/${name}`}
+        key={id}
+        className={`pokemon-card ${types && types[0]}-card`}
+      >
         <div className="pokemon-img-container">
-          <img src={imgSrc} alt={name} className="pokemon-img" />
+          <img
+            src={imgSrc}
+            alt={name}
+            // onError={(e) => changeImg(e)}
+            className="pokemon-img"
+          />
         </div>
         <div className="pokemon-data-container">
           <h2 className="pokemon-name">{name}</h2>
@@ -71,7 +86,7 @@ const PokemonCard = ({ name, pokemon_url }) => {
             })}
           </div>
         </div>
-      </article>
+      </Link>
     );
   }
 };
