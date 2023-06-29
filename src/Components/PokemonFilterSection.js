@@ -69,8 +69,11 @@ const PokemonFilterSection = ({
     for (const key in params) {
       if (key !== "search") {
         searchParams.get(key);
-        document.getElementById(key).value = params[key].toLowerCase();
-        document.getElementById(key).classList.add("bold-font");
+        const doc = document.getElementById(key);
+        if (doc) {
+          doc.value = params[key].toLowerCase();
+          doc.classList.add("bold-font");
+        }
       }
     }
   };
