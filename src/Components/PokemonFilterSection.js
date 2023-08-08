@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaHome, FaFilter, FaStar } from "react-icons/fa";
+import { FaHome, FaFilter } from "react-icons/fa";
+import { MdBookmarks } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const PokemonFilterSection = ({
@@ -123,7 +124,7 @@ const PokemonFilterSection = ({
   return (
     <section className="pokemon-filter-container">
       <div className="filter-header">
-        <Link to="/" className="home-btn">
+        <Link to="/" className="home-btn secondary-btn">
           <FaHome />
         </Link>
         <button
@@ -133,8 +134,8 @@ const PokemonFilterSection = ({
           <FaFilter />
           filter
         </button>
-        <Link to="/bookmarks" className="bookmarks-btn">
-          <FaStar />
+        <Link to="/bookmarks" className="bookmarks-btn secondary-btn">
+          <MdBookmarks />
         </Link>
       </div>
       <div

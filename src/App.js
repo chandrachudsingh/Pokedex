@@ -3,6 +3,7 @@ import HomePage from "./Components/HomePage";
 import PokemonListPage from "./Components/PokemonListPage";
 import PokemonDetailsPage from "./Components/PokemonDetailsPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import BookmarksPage from "./Components/BookmarksPage";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
             path="/pokemons/:pokemon_name"
             element={<PokemonDetailsPage />}
           />
-          {/* <Route path="/bookmarks" element={<BookmarkPage />} /> */}
+          <Route path="/bookmarks" element={<BookmarksPage />} />
         </Routes>
       </Router>
     </div>

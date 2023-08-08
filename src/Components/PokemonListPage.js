@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 
 const PokemonListPage = () => {
   const [page, setPage] = useState(1);
-  const [isLastPage, setIsLastPage] = useState(false);
+  // const [isLastPage, setIsLastPage] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [scrollLoading, setScrollLoading] = useState(false);
   const [pokemonsLoading, setPokemonsLoading] = useState(false);
@@ -218,19 +218,20 @@ const PokemonListPage = () => {
   };
 
   const addNextPage = () => {
-    const offset = (page - 1) * pageSize;
+    // const offset = (page - 1) * pageSize;
     const limit = page * pageSize;
 
-    const newPokemons = pokemons.slice(offset, limit);
-    if (page !== 1) {
-      setIsLastPage(false);
-      setDisplayPokemons((prevPokemons) => [
-        ...new Set([...prevPokemons, ...newPokemons]),
-      ]);
-    } else {
-      setDisplayPokemons(newPokemons);
-      setIsLastPage(true);
-    }
+    const newPokemons = pokemons.slice(0, limit);
+    setDisplayPokemons(newPokemons);
+    // if (page !== 1) {
+    //   setIsLastPage(false);
+    //   setDisplayPokemons((prevPokemons) => [
+    //     ...new Set([...prevPokemons, ...newPokemons]),
+    //   ]);
+    // } else {
+    //   setDisplayPokemons(newPokemons);
+    //   setIsLastPage(true);
+    // }
     setScrollLoading(false);
   };
 
@@ -240,12 +241,12 @@ const PokemonListPage = () => {
     const scrollTop = document.documentElement.scrollTop;
 
     if (innerHeight + scrollTop + 1 >= scrollHeight) {
-      if (!isLastPage) {
-        setScrollLoading(true);
-        setPage((prevPage) => {
-          return prevPage + 1;
-        });
-      }
+      // if (!isLastPage) {
+      setScrollLoading(true);
+      setPage((prevPage) => {
+        return prevPage + 1;
+      });
+      // }
     }
   };
 

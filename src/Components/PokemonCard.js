@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdCatchingPokemon } from "react-icons/md";
-import PokemonOpen from "../Images/pokeball-open.png";
 import { Link } from "react-router-dom";
+import { formatPokemonCardData } from "../Utils/pokemonUtils";
 
 const PokemonCard = ({ name, pokemon_url }) => {
   const [loading, setLoading] = useState(true);
@@ -17,29 +17,14 @@ const PokemonCard = ({ name, pokemon_url }) => {
     setLoading(false);
   };
 
-  const formatPokemonData = (pokemon) => {
-    const { id, name, sprites, types } = pokemon;
-
-    const paddedId = String(id).padStart(4, "0");
-    const formattedTypes = types.map(({ type }) => type.name);
-    const pokemonImg =
-      sprites.other["official-artwork"].front_default ||
-      sprites.other.dream_world.front_default;
-    setPokemonData({
-      id: paddedId,
-      name: removeHyphens(name),
-      imgSrc: pokemonImg ? pokemonImg : PokemonOpen,
-      types: formattedTypes,
-    });
+  const setCardPokemonData = (data) => {
+    const formattedData = formatPokemonCardData(data);
+    setPokemonData(formattedData);
   };
 
   // const changeImg = (e) => {
   //   e.target.src = PokemonOpen;
   // };
-
-  const removeHyphens = (name) => {
-    return name.replace("-", " ");
-  };
 
   useEffect(() => {
     getData();
@@ -47,7 +32,7 @@ const PokemonCard = ({ name, pokemon_url }) => {
 
   useEffect(() => {
     if (data.length !== 0) {
-      formatPokemonData(data);
+      setCardPokemonData(data);
     }
   }, [data]);
 
@@ -61,7 +46,7 @@ const PokemonCard = ({ name, pokemon_url }) => {
     const { id, name, imgSrc, types } = pokemonData;
     return (
       <Link
-        to={`/pokemons/${name}`}
+        to={`/pokemons/${name?.replace(" ", "-")}`}
         key={id}
         className={`pokemon-card ${types && types[0]}-card`}
       >
@@ -80,6 +65,7 @@ const PokemonCard = ({ name, pokemon_url }) => {
             {types?.map((type) => {
               return (
                 <p key={type} className={`pokemon-type ${type}`}>
+                  <img src={require(`../Images/${type}.svg`)} alt="" />
                   {type}
                 </p>
               );

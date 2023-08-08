@@ -3,11 +3,17 @@ import pokemonLogo from "../Images/pokemon-logo2.png";
 import Pokeball from "../Images/pokeball.png";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import ErrorMessage from "./ErrorMessage";
+
+var modalTimeout;
 
 const HomePage = () => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
-  const searchBtnRef = useRef();
+  const [error, setError] = useState({ isError: false, msg: "" });
+  const searchBtnRef = useRef(null);
+
+  const errorDuration = 3000;
   const navigate = useNavigate();
 
   const api = "https://pokeapi.co/api/v2/";
@@ -20,6 +26,18 @@ const HomePage = () => {
       (pokemon) => pokemon.name === searchText.toLowerCase()
     );
     return list;
+  };
+
+  const showError = (errorMsg) => {
+    clearTimeout(modalTimeout);
+    setError({ ...error, isError: false });
+    setTimeout(() => {
+      setError({ isError: true, msg: errorMsg });
+    }, 0);
+    const transitionDuration = 200;
+    modalTimeout = setTimeout(() => {
+      setError({ ...error, isError: false });
+    }, errorDuration + transitionDuration);
   };
 
   const validateSearch = async () => {
@@ -51,13 +69,13 @@ const HomePage = () => {
             navigate(`/pokemons?search=${searchVal}`);
           } else {
             setLoading(false);
-            console.log("invalid search");
+            showError("invalid search");
           }
         }
       }
     } else {
       setLoading(false);
-      console.log("Empty");
+      showError("search field can't be empty");
     }
   };
 
@@ -85,21 +103,28 @@ const HomePage = () => {
       <div className="pokemon-logo-container">
         <img src={pokemonLogo} alt="Pokemon Logo" />
       </div>
-      <div className="search-field">
-        <input
-          type="text"
-          id="txsearch"
-          placeholder="Search Pokemon"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <button
-          className="search-btn"
-          ref={searchBtnRef}
-          onClick={validateSearch}
-        >
-          <FaSearch className="search-icon" />
-        </button>
+      <div className="search-container">
+        <div className="search-field">
+          <input
+            type="text"
+            id="txsearch"
+            placeholder="Search Pokemon"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            className="search-btn"
+            ref={searchBtnRef}
+            onClick={validateSearch}
+          >
+            <FaSearch className="search-icon" />
+          </button>
+        </div>
+        <div className="search-error">
+          {error.isError && (
+            <ErrorMessage error={error} errorDuration={errorDuration} />
+          )}
+        </div>
       </div>
 
       <Link to="/pokemons?search=pokedex" className="pokedex-btn">
