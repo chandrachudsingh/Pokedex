@@ -23,25 +23,29 @@ const BookmarksPage = () => {
 
   return (
     <div className="bookmarks-page">
-      {bookmarks ? (
-        <div className="bookmarks-container">
-          <Link to="/" className="home-btn secondary-btn">
-            <FaHome />
-          </Link>
-          <h1 className="bookmarks-heading">
-            Bookmarks:{" "}
+      <div className="bookmarks-header">
+        <Link to="/" className="home-btn secondary-btn">
+          <FaHome />
+        </Link>
+        <h1 className="bookmarks-heading">
+          Bookmarks:{" "}
+          {bookmarks && (
             <span>
               {bookmarks.length !== 0
                 ? bookmarks.length
-                : "No pokemons bookmarked"}
+                : "No pokémons bookmarked"}
             </span>
-          </h1>
-          <button
-            className="delete-bookmarks-btn primary-btn"
-            onClick={deleteAllBookmarks}
-          >
-            Delete All
-          </button>
+          )}
+        </h1>
+        <button
+          className="delete-bookmarks-btn primary-btn"
+          onClick={deleteAllBookmarks}
+        >
+          Delete All
+        </button>
+      </div>
+      {bookmarks ? (
+        <div className="bookmarks-container">
           {bookmarks.length > 0 ? (
             <div className="bookmarked-items">
               {bookmarks.map((bookmark, index) => {

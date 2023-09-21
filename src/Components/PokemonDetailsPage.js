@@ -95,6 +95,8 @@ const PokemonDetailsPage = () => {
     let bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
     if (bookmarks && bookmarks.includes(pokemonData.name)) {
       setIsBookmarked(true);
+    } else {
+      setIsBookmarked(false);
     }
   };
 
@@ -290,6 +292,10 @@ const PokemonDetailsPage = () => {
                                           to={`/pokemons?type=${type}`}
                                           className={type}
                                         >
+                                          <img
+                                            src={require(`../Images/${type}.svg`)}
+                                            alt=""
+                                          />
                                           {type}
                                         </Link>
                                       );
@@ -323,6 +329,10 @@ const PokemonDetailsPage = () => {
                                             key={type}
                                             className={type}
                                           >
+                                            <img
+                                              src={require(`../Images/${type}.svg`)}
+                                              alt=""
+                                            />
                                             {type}
                                           </Link>
                                         );

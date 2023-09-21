@@ -199,7 +199,8 @@ const PokemonFilterSection = ({
               <option value="">select location</option>
               {locations.map((location) => {
                 const { name, url } = location;
-                const shortName = name.length > 20 ? name.substr(0, 20) : name;
+                const shortName =
+                  name.length > 20 ? name.substr(0, 20) + "..." : name;
                 return (
                   <option key={url} value={name}>
                     {shortName}

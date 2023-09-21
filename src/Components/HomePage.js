@@ -100,37 +100,42 @@ const HomePage = () => {
         </div>
       )}
 
-      <div className="pokemon-logo-container">
-        <img src={pokemonLogo} alt="Pokemon Logo" />
-      </div>
-      <div className="search-container">
-        <div className="search-field">
-          <input
-            type="text"
-            id="txsearch"
-            placeholder="Search Pokemon"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <button
-            className="search-btn"
-            ref={searchBtnRef}
-            onClick={validateSearch}
-          >
-            <FaSearch className="search-icon" />
-          </button>
+      <div className="pokemon-search-section">
+        <div className="pokemon-logo-container">
+          <img src={pokemonLogo} alt="Pokemon Logo" />
         </div>
-        <div className="search-error">
-          {error.isError && (
-            <ErrorMessage error={error} errorDuration={errorDuration} />
-          )}
+        <div className="search-heading">
+          <h3>Search Pokémons by its Name, Ability or Move.</h3>
         </div>
-      </div>
+        <div className="search-container">
+          <div className="search-field">
+            <input
+              type="text"
+              id="txsearch"
+              placeholder="Search Pokémon"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <button
+              className="search-btn"
+              ref={searchBtnRef}
+              onClick={validateSearch}
+            >
+              <FaSearch className="search-icon" />
+            </button>
+          </div>
+          <div className="search-error">
+            {error.isError && (
+              <ErrorMessage error={error} errorDuration={errorDuration} />
+            )}
+          </div>
+        </div>
 
-      <Link to="/pokemons?search=pokedex" className="pokedex-btn">
-        <img src={Pokeball} alt="" />
-        <p>Pokédex</p>
-      </Link>
+        <Link to="/pokemons?search=pokedex" className="pokedex-btn">
+          <img src={Pokeball} alt="" />
+          <p>Pokédex</p>
+        </Link>
+      </div>
     </main>
   );
 };

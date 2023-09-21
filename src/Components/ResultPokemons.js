@@ -27,7 +27,7 @@ const ResultPokemons = ({
           <h1 className="pokemon-list-heading">
             {params.search === "pokedex" && Object.keys(params).length === 1
               ? "pokédex"
-              : "your pokemon"}
+              : "your pokémon"}
             {pokemons.length < 1 && ":"}
             <span>{pokemons.length < 1 && " no match"}</span>
           </h1>
