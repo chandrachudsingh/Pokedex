@@ -12,6 +12,7 @@ import {
   formatPokemonCardData,
   formatPokemonData,
 } from "../Utils/pokemonUtils";
+import PokeballOpen from "../Images/pokeball-open.png";
 
 const PokemonDetailsPage = () => {
   const [pokemonData, setPokemonData] = useState(null);
@@ -50,27 +51,79 @@ const PokemonDetailsPage = () => {
   const getEvolutionChain = async (evolution_chain) => {
     const evolutionResponse = await fetch(evolution_chain.url);
     const evolutionResult = await evolutionResponse.json();
-    let chain = await evolutionResult.chain;
-    const evolution = [chain.species];
-    while (chain.evolves_to.length > 0) {
-      chain = chain.evolves_to[0];
-      const nextEvolution = chain.species;
-      evolution.push(nextEvolution);
+    const chain = await evolutionResult.chain;
+
+    const evolution_tree = [[{ ...chain.species, trigger_item: null }]];
+
+    let middleStage = [],
+      lastStage = [];
+    for (let i = 0; i < chain.evolves_to.length; i++) {
+      let evo_chain = chain.evolves_to[i];
+      let trigger_item =
+        evo_chain.evolution_details.length > 0
+          ? evo_chain.evolution_details[0].item
+          : null;
+      for (let k = 0; k < evo_chain.evolution_details.length; k++) {
+        if (evo_chain.evolution_details[k].item) {
+          trigger_item = evo_chain.evolution_details[k].item;
+          break;
+        }
+      }
+      middleStage.push({ ...evo_chain.species, trigger_item });
+      for (let j = 0; j < evo_chain.evolves_to.length; j++) {
+        let evo_chain2 = evo_chain.evolves_to[j];
+        trigger_item =
+          evo_chain2.evolution_details.length > 0
+            ? evo_chain2.evolution_details[0].item
+            : null;
+        for (let k = 0; k < evo_chain.evolution_details.length; k++) {
+          if (evo_chain2.evolution_details[k].item) {
+            trigger_item = evo_chain2.evolution_details[k].item;
+            break;
+          }
+        }
+        lastStage.push({ ...evo_chain2.species, trigger_item });
+      }
+    }
+    if (middleStage.length > 0) {
+      evolution_tree.push(middleStage);
+    }
+    if (lastStage.length > 0) {
+      evolution_tree.push(lastStage);
     }
 
     let evolutionChain = Promise.all(
-      evolution.map(async (value) => {
-        const id = value.url
-          .replace(api, "")
-          .replaceAll("/", "")
-          .replaceAll("-", "")
-          .replace(/[^0-9]/g, "");
-        const resp = await fetch(url + id);
-        const res = await resp.json();
-        const item = formatPokemonCardData(res);
-        return item;
+      evolution_tree.map(async (evolution) => {
+        let evolutionStage = Promise.all(
+          evolution.map(async (value) => {
+            const id = value.url
+              .replace(api, "")
+              .replaceAll("/", "")
+              .replaceAll("-", "")
+              .replace(/[^0-9]/g, "");
+            const resp = await fetch(url + id);
+            const res = await resp.json();
+            const item = formatPokemonCardData(res);
+
+            if (value.trigger_item) {
+              const trigger_resp = await fetch(value.trigger_item.url);
+              const trigger_res = await trigger_resp.json();
+              return {
+                ...item,
+                trigger_item: {
+                  name: value.trigger_item.name,
+                  img: trigger_res.sprites.default || PokeballOpen,
+                },
+              };
+            } else {
+              return { ...item, trigger_tem: null };
+            }
+          })
+        );
+        return evolutionStage.then((stage) => stage);
       })
     );
+
     evolutionChain.then((evolution) => {
       setPokemonData((prevData) => {
         return { ...prevData, evolution };
@@ -265,87 +318,80 @@ const PokemonDetailsPage = () => {
                         </h3>
                       ) : (
                         <>
-                          {pokemonData.evolution.map((item, i, evolution) => {
-                            const { id, name, imgSrc, types } = item;
-                            if (evolution.length - 1 === i) {
-                              // last element
-                              return (
-                                <div key={name} className="pokemon-evolution">
-                                  <Link
-                                    to={`/pokemons/${name}`}
-                                    className="evolution-img-container"
-                                  >
-                                    <img src={imgSrc} alt="" />
-                                  </Link>
-                                  <Link
-                                    to={`/pokemons/${name}`}
-                                    className="pokemon-id"
-                                  >
-                                    <h3>{name}</h3>
-                                    <p>#{id}</p>
-                                  </Link>
-                                  <div className="pokemon-types">
-                                    {types.map((type) => {
-                                      return (
-                                        <Link
-                                          key={type}
-                                          to={`/pokemons?type=${type}`}
-                                          className={type}
-                                        >
-                                          <img
-                                            src={require(`../Images/${type}.svg`)}
-                                            alt=""
+                          {pokemonData.evolution.map((stage, i, evolution) => {
+                            return (
+                              <div
+                                key={i}
+                                className={`${
+                                  i === 0
+                                    ? "first-stage"
+                                    : i === 1 && evolution.length === 3
+                                    ? "middle-stage"
+                                    : "last-stage"
+                                } ${
+                                  stage.length > 2
+                                    ? "multi-level"
+                                    : stage.length === 2 && "two-level"
+                                }`}
+                              >
+                                {stage.map((item) => {
+                                  const {
+                                    id,
+                                    name,
+                                    imgSrc,
+                                    types,
+                                    trigger_item,
+                                  } = item;
+                                  return (
+                                    <div key={name} className="evolution-stage">
+                                      {/* Evolution arrow position */}
+                                      {((i !== 0 && evolution[i].length <= 2) ||
+                                        (i !== evolution.length - 1 &&
+                                          evolution[i + 1].length > 2)) && (
+                                        <div className="evolution-method">
+                                          <MdKeyboardDoubleArrowRight
+                                            key={JSON.stringify(Date.now())}
+                                            className="arrow-icon"
                                           />
-                                          {type}
+                                        </div>
+                                      )}
+                                      <div className="pokemon-evolution">
+                                        <Link
+                                          to={`/pokemons/${name}`}
+                                          className="evolution-img-container"
+                                        >
+                                          <img src={imgSrc} alt="" />
                                         </Link>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              );
-                            } else {
-                              // not last element
-                              return (
-                                <React.Fragment key={name}>
-                                  <div className="pokemon-evolution">
-                                    <Link
-                                      to={`/pokemons/${name}`}
-                                      className="evolution-img-container"
-                                    >
-                                      <img src={imgSrc} alt="" />
-                                    </Link>
-                                    <Link
-                                      to={`/pokemons/${name}`}
-                                      className="pokemon-id"
-                                    >
-                                      <h3>{name}</h3>
-                                      <p>#{id}</p>
-                                    </Link>
-                                    <div className="pokemon-types">
-                                      {types.map((type) => {
-                                        return (
-                                          <Link
-                                            to={`/pokemons?type=${type}`}
-                                            key={type}
-                                            className={type}
-                                          >
-                                            <img
-                                              src={require(`../Images/${type}.svg`)}
-                                              alt=""
-                                            />
-                                            {type}
-                                          </Link>
-                                        );
-                                      })}
+                                        <Link
+                                          to={`/pokemons/${name}`}
+                                          className="pokemon-id"
+                                        >
+                                          <h3>{name}</h3>
+                                          <p>#{id}</p>
+                                        </Link>
+                                        <div className="pokemon-types">
+                                          {types.map((type) => {
+                                            return (
+                                              <Link
+                                                to={`/pokemons?type=${type}`}
+                                                key={type}
+                                                className={type}
+                                              >
+                                                <img
+                                                  src={require(`../Images/${type}.svg`)}
+                                                  alt=""
+                                                />
+                                                {type}
+                                              </Link>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <MdKeyboardDoubleArrowRight
-                                    key={JSON.stringify(Date.now())}
-                                    className="arrow-icon"
-                                  />
-                                </React.Fragment>
-                              );
-                            }
+                                  );
+                                })}
+                              </div>
+                            );
                           })}
                         </>
                       )}
