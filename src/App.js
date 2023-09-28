@@ -13,7 +13,7 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route path="/pokemons" element={<PokemonListPage />} />
           <Route
-            path="/pokemons/:pokemon_name"
+            path="/pokemon/:pokemon_name"
             element={<PokemonDetailsPage />}
           />
           <Route path="/bookmarks" element={<BookmarksPage />} />

@@ -46,7 +46,7 @@ const PokemonCard = ({ name, pokemon_url }) => {
     const { id, name, imgSrc, types } = pokemonData;
     return (
       <Link
-        to={`/pokemons/${name?.replace(" ", "-")}`}
+        to={`/pokemon/${name?.replace(" ", "-")}`}
         key={id}
         className={`pokemon-card ${types && types[0]}-card`}
       >

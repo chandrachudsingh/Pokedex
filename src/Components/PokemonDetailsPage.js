@@ -357,13 +357,13 @@ const PokemonDetailsPage = () => {
                                       )}
                                       <div className="pokemon-evolution">
                                         <Link
-                                          to={`/pokemons/${name}`}
+                                          to={`/pokemon/${name}`}
                                           className="evolution-img-container"
                                         >
                                           <img src={imgSrc} alt="" />
                                         </Link>
                                         <Link
-                                          to={`/pokemons/${name}`}
+                                          to={`/pokemon/${name}`}
                                           className="pokemon-id"
                                         >
                                           <h3>{name}</h3>
