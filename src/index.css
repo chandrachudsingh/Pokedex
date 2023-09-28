@@ -1137,7 +1137,7 @@ body {
 }
 
 .pokemon-card .pokemon-id {
-  color: var(--white-color-tr);
+  color: var(---white-color-tr);
   font-size: 1.5rem;
   position: absolute;
   bottom: 1rem;
