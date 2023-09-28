@@ -5,7 +5,6 @@ import { useSearchParams } from "react-router-dom";
 
 const PokemonListPage = () => {
   const [page, setPage] = useState(1);
-  // const [isLastPage, setIsLastPage] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [scrollLoading, setScrollLoading] = useState(false);
   const [pokemonsLoading, setPokemonsLoading] = useState(false);
@@ -133,6 +132,14 @@ const PokemonListPage = () => {
       result = result.pokemon;
       const pokemonList = result.map(({ pokemon }) => pokemon.name);
       setAbilityPokemons(pokemonList);
+      if (
+        "group" in params === false &&
+        "habitat" in params === false &&
+        "location" in params === false &&
+        "type" in params === false
+      ) {
+        setPokemonsLoading(false);
+      }
     } else {
       setAbilityPokemons([]);
     }
@@ -144,6 +151,13 @@ const PokemonListPage = () => {
       result = result.pokemon_species;
       const pokemonList = result.map((pokemon) => pokemon.name);
       setGroupPokemons(pokemonList);
+      if (
+        "habitat" in params === false &&
+        "location" in params === false &&
+        "type" in params === false
+      ) {
+        setPokemonsLoading(false);
+      }
     } else {
       setGroupPokemons([]);
     }
@@ -155,6 +169,9 @@ const PokemonListPage = () => {
       result = result.pokemon_species;
       const pokemonList = result.map((pokemon) => pokemon.name);
       setHabitatPokemons(pokemonList);
+      if ("location" in params === false && "type" in params === false) {
+        setPokemonsLoading(false);
+      }
     } else {
       setHabitatPokemons([]);
     }
@@ -166,6 +183,9 @@ const PokemonListPage = () => {
       result = result.pokemon_encounters;
       const pokemonList = result.map(({ pokemon }) => pokemon.name);
       setLocationPokemons(pokemonList);
+      if ("type" in params === false) {
+        setPokemonsLoading(false);
+      }
     } else {
       setLocationPokemons([]);
     }
@@ -177,8 +197,19 @@ const PokemonListPage = () => {
       result = result.pokemon;
       const pokemonList = result.map(({ pokemon }) => pokemon.name);
       setTypePokemons(pokemonList);
+      setPokemonsLoading(false);
     } else {
       setTypePokemons([]);
+    }
+
+    if (
+      "ability" in params === false &&
+      "group" in params === false &&
+      "habitat" in params === false &&
+      "location" in params === false &&
+      "type" in params === false
+    ) {
+      setPokemonsLoading(false);
     }
   };
 
@@ -214,24 +245,13 @@ const PokemonListPage = () => {
       );
     }
     setPokemons(commonPokemons);
-    setPokemonsLoading(false);
   };
 
   const addNextPage = () => {
-    // const offset = (page - 1) * pageSize;
     const limit = page * pageSize;
 
     const newPokemons = pokemons.slice(0, limit);
     setDisplayPokemons(newPokemons);
-    // if (page !== 1) {
-    //   setIsLastPage(false);
-    //   setDisplayPokemons((prevPokemons) => [
-    //     ...new Set([...prevPokemons, ...newPokemons]),
-    //   ]);
-    // } else {
-    //   setDisplayPokemons(newPokemons);
-    //   setIsLastPage(true);
-    // }
     setScrollLoading(false);
   };
 
@@ -241,12 +261,10 @@ const PokemonListPage = () => {
     const scrollTop = document.documentElement.scrollTop;
 
     if (innerHeight + scrollTop + 1 >= scrollHeight) {
-      // if (!isLastPage) {
       setScrollLoading(true);
       setPage((prevPage) => {
         return prevPage + 1;
       });
-      // }
     }
   };
 
