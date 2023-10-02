@@ -29,8 +29,8 @@
   --green-color: rgb(0, 140, 0);
   --red-color: rgb(230, 0, 0);
   --light-blue-clr: rgb(180, 218, 233);
-  ---white-color-tr: rgba(255, 255, 255, 0.5);
-  ---white-color-tr2: rgba(255, 255, 255, 0.3);
+  --white-color-tr: rgba(255, 255, 255, 0.5);
+  --white-color-tr2: rgba(255, 255, 255, 0.3);
 
   /* pokemon type colors */
   --grass-color: rgb(28, 216, 14);
@@ -315,7 +315,9 @@ body {
   }
 }
 
-/* ----------------- Home/Search Page ----------------- */
+/* ********************************************** */
+/* -------------- Home/Search Page ---------------*/
+/* ********************************************** */
 
 .home-page {
   background-color: var(--primary-color);
@@ -705,7 +707,9 @@ body {
   }
 }
 
-/* ----------- Pokemon List Page ------------ */
+/* ********************************************** */
+/* -------------- Pokemon List Page ------------- */
+/* ********************************************** */
 
 .pokemon-list-page {
   background-color: var(--primary-color);
@@ -1137,7 +1141,7 @@ body {
 }
 
 .pokemon-card .pokemon-id {
-  color: var(---white-color-tr);
+  color: var(--white-color-tr);
   font-size: 1.5rem;
   position: absolute;
   bottom: 1rem;
@@ -1161,7 +1165,7 @@ body {
 }
 
 .pokemon-card .pokemon-type {
-  background-color: var(---white-color-tr2);
+  background-color: var(--white-color-tr2);
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius2);
   box-shadow: var(--box-shadow4);
@@ -1607,7 +1611,9 @@ body {
   }
 }
 
-/*------------ Pokemon details page ------------*/
+/* ********************************************** */
+/* ------------ Pokemon details page ------------ */
+/* ********************************************** */
 
 .pokemon-details-page {
   background-color: var(--primary-color);
@@ -1702,7 +1708,7 @@ body {
 }
 
 .basic-details .pokemon-type {
-  background-color: var(---white-color-tr2);
+  background-color: var(--white-color-tr2);
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius3);
   box-shadow: var(--box-shadow4);
@@ -2203,6 +2209,7 @@ body {
   border: 6px solid white;
   border-radius: var(--border-radius2);
   cursor: pointer;
+  /* position: relative; */
   text-align: center;
   height: 200px;
   width: 200px;
@@ -2212,6 +2219,11 @@ body {
   border: 4px solid white;
   height: 140px;
   width: 140px;
+}
+
+.pokemon-evolution .evolution-item img {
+  background-color: var(--primary-color-dk2);
+  border-radius: var(--border-radius-circular) var(--border-radius3);
 }
 
 .evolution-img-container img {
@@ -2273,6 +2285,20 @@ body {
 .middle-stage .evolution-method,
 .last-stage .evolution-method {
   left: -3rem;
+}
+
+@media (hover: hover) {
+  .evolution-item:hover .item_tooltip {
+    visibility: visible;
+  }
+}
+
+.evolution-item img {
+  background-color: var(--primary-color-tr2);
+  border-radius: var(--border-radius-circular);
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
 }
 
 .evolution-method .arrow-icon {
@@ -2698,7 +2724,9 @@ body {
   }
 }
 
-/*------------ Bookmark Page ------------*/
+/* ********************************************** */
+/* -----------------Bookmark Page---------------- */
+/* ********************************************** */
 
 .bookmarks-page {
   background-color: var(--primary-color);
@@ -2898,5 +2926,83 @@ body {
   /* bookmarks heading */
   .bookmarks-heading {
     grid-area: 2/1/3/3;
+  }
+}
+
+/* ********************************************** */
+/* ------------------Error Page------------------ */
+/* ********************************************** */
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--page-padding-lg-screen);
+  height: 100vh;
+  width: 100%;
+}
+
+.error-code {
+  background: linear-gradient(
+    to right,
+    var(--red-color) 33%,
+    var(--black-font-color) 67%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: inherit;
+  font-size: 10rem;
+}
+
+.error-message {
+  color: var(--grey-color-dk);
+  text-transform: capitalize;
+}
+
+.error-para {
+  text-align: center;
+  color: var(--grey-color-dk);
+  margin: 20px;
+}
+
+.return-home-btn {
+  background-color: var(--primary-btn-color);
+  border-radius: var(--border-radius4);
+  color: white;
+  font-size: 1rem;
+  padding: 6px 1rem;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 768px) {
+  .error-page {
+    padding: var(--page-padding-md-screen);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .error-code {
+    font-size: 8rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .error-page {
+    padding: var(--page-padding-sm-screen);
+  }
+
+  .error-code {
+    font-size: 5rem;
+  }
+
+  .error-message {
+    font-size: 1.25rem;
+  }
+
+  .error-para,
+  .return-home-btn {
+    font-size: 0.9rem;
   }
 }

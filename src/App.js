@@ -4,6 +4,7 @@ import PokemonListPage from "./Components/PokemonListPage";
 import PokemonDetailsPage from "./Components/PokemonDetailsPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BookmarksPage from "./Components/BookmarksPage";
+import ErrorPage from "./Components/ErrorPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             element={<PokemonDetailsPage />}
           />
           <Route path="/bookmarks" element={<BookmarksPage />} />
+          <Route path="/*" element={<ErrorPage />} />
         </Routes>
       </Router>
     </div>
