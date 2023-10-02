@@ -13,11 +13,13 @@ import {
   formatPokemonData,
 } from "../Utils/pokemonUtils";
 import PokeballOpen from "../Images/pokeball-open.png";
+import ErrorPage from "../Components/ErrorPage";
 
 const PokemonDetailsPage = () => {
   const [pokemonData, setPokemonData] = useState(null);
   const [pokemonLoading, setPokemonLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [pokemonExists, setPokemonExists] = useState(true);
   const { pokemon_name } = useParams();
   const url = "https://pokeapi.co/api/v2/pokemon/";
   const api = "https://pokeapi.co/api/v2/";
@@ -33,6 +35,21 @@ const PokemonDetailsPage = () => {
 
   const getPokemonDetails = async () => {
     setPokemonLoading(true);
+
+    // check if the pokemon exists
+    const resp = await fetch(api + "pokemon/?offset=0&limit=10000");
+    const res = await resp.json();
+    const pokemonList = res.results;
+    const list = pokemonList.filter(
+      (pokemon) => pokemon.name === pokemon_name.toLowerCase()
+    );
+    if (list.length === 0) {
+      setPokemonLoading(false);
+      // navigate("/not-found");
+      setPokemonExists(false);
+    }
+
+    // get pokemon
     const response = await fetch(url + pokemon_name);
     let result = await response.json();
 
@@ -174,7 +191,7 @@ const PokemonDetailsPage = () => {
             </div>
           </div>
         </>
-      ) : (
+      ) : pokemonExists ? (
         <>
           {pokemonData && (
             <div className="pokemon-details">
@@ -406,6 +423,8 @@ const PokemonDetailsPage = () => {
             </div>
           )}
         </>
+      ) : (
+        <ErrorPage errorMessage={"No such Pokémon exist."} />
       )}
     </div>
   );
