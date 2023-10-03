@@ -366,6 +366,17 @@ const PokemonDetailsPage = () => {
                                         (i !== evolution.length - 1 &&
                                           evolution[i + 1].length > 2)) && (
                                         <div className="evolution-method">
+                                          {trigger_item && (
+                                            <div className="evolution-item">
+                                              <img
+                                                src={trigger_item.img}
+                                                alt=""
+                                              />
+                                              <p className="item_tooltip">
+                                                {trigger_item.name}
+                                              </p>
+                                            </div>
+                                          )}
                                           <MdKeyboardDoubleArrowRight
                                             key={JSON.stringify(Date.now())}
                                             className="arrow-icon"
@@ -377,6 +388,18 @@ const PokemonDetailsPage = () => {
                                           to={`/pokemon/${name}`}
                                           className="evolution-img-container"
                                         >
+                                          {trigger_item &&
+                                            evolution[i].length > 2 && (
+                                              <div className="evolution-item">
+                                                <img
+                                                  src={trigger_item.img}
+                                                  alt=""
+                                                />
+                                                <p className="item_tooltip">
+                                                  {trigger_item.name}
+                                                </p>
+                                              </div>
+                                            )}
                                           <img src={imgSrc} alt="" />
                                         </Link>
                                         <Link
