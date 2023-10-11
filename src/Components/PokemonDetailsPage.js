@@ -169,7 +169,9 @@ const PokemonDetailsPage = () => {
     }
   };
 
+  let tooltipTimeout = null;
   const showEvolutionItemName = (e) => {
+    clearTimeout(tooltipTimeout);
     let tooltip = e.target;
     while (tooltip.nextElementSibling) {
       if (!tooltip.classList.contains("item_tooltip")) {
@@ -177,7 +179,7 @@ const PokemonDetailsPage = () => {
       }
     }
     tooltip.classList.add("show-tooltip");
-    setTimeout(() => {
+    tooltipTimeout = setTimeout(() => {
       tooltip.classList.remove("show-tooltip");
     }, 2500);
   };
