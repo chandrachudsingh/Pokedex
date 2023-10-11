@@ -96,6 +96,7 @@ const PokemonListPage = () => {
     } else {
       if (searchItem.length === 0) {
         setPokemonsLoading(false);
+        setScrollLoading(true);
         setSearchPokemons([]);
         return;
       }
@@ -112,6 +113,7 @@ const PokemonListPage = () => {
           result = result.pokemon;
           if (result.length === 0) {
             setPokemonsLoading(false);
+            setScrollLoading(true);
           }
           const pokemonList = result.map(({ pokemon }) => pokemon);
           setSearchPokemons(pokemonList);
@@ -119,6 +121,7 @@ const PokemonListPage = () => {
           result = result.learned_by_pokemon;
           if (result.length === 0) {
             setPokemonsLoading(false);
+            setScrollLoading(true);
           }
           setSearchPokemons(result);
         }
@@ -139,6 +142,7 @@ const PokemonListPage = () => {
         "type" in params === false
       ) {
         setPokemonsLoading(false);
+        setScrollLoading(true);
       }
     } else {
       setAbilityPokemons([]);
@@ -157,6 +161,7 @@ const PokemonListPage = () => {
         "type" in params === false
       ) {
         setPokemonsLoading(false);
+        setScrollLoading(true);
       }
     } else {
       setGroupPokemons([]);
@@ -171,6 +176,7 @@ const PokemonListPage = () => {
       setHabitatPokemons(pokemonList);
       if ("location" in params === false && "type" in params === false) {
         setPokemonsLoading(false);
+        setScrollLoading(true);
       }
     } else {
       setHabitatPokemons([]);
@@ -185,6 +191,7 @@ const PokemonListPage = () => {
       setLocationPokemons(pokemonList);
       if ("type" in params === false) {
         setPokemonsLoading(false);
+        setScrollLoading(true);
       }
     } else {
       setLocationPokemons([]);
@@ -198,6 +205,7 @@ const PokemonListPage = () => {
       const pokemonList = result.map(({ pokemon }) => pokemon.name);
       setTypePokemons(pokemonList);
       setPokemonsLoading(false);
+      setScrollLoading(true);
     } else {
       setTypePokemons([]);
     }
@@ -210,6 +218,7 @@ const PokemonListPage = () => {
       "type" in params === false
     ) {
       setPokemonsLoading(false);
+      setScrollLoading(true);
     }
   };
 
@@ -250,9 +259,11 @@ const PokemonListPage = () => {
   const addNextPage = () => {
     const limit = page * pageSize;
 
+    if (displayPokemons.length === pokemons.length) {
+      setScrollLoading(false);
+    }
     const newPokemons = pokemons.slice(0, limit);
     setDisplayPokemons(newPokemons);
-    setScrollLoading(false);
   };
 
   const handleInfiniteScroll = async () => {
@@ -261,7 +272,6 @@ const PokemonListPage = () => {
     const scrollTop = document.documentElement.scrollTop;
 
     if (innerHeight + scrollTop + 1 >= scrollHeight) {
-      setScrollLoading(true);
       setPage((prevPage) => {
         return prevPage + 1;
       });
@@ -295,12 +305,6 @@ const PokemonListPage = () => {
   useEffect(() => {
     addNextPage();
   }, [page, pokemons]);
-
-  useEffect(() => {
-    if (scrollLoading) {
-      window.scrollBy({ top: 48, behavior: "smooth" });
-    }
-  }, [scrollLoading]);
 
   return (
     <div className="pokemon-list-page">
