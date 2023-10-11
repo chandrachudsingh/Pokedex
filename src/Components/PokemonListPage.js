@@ -262,6 +262,7 @@ const PokemonListPage = () => {
 
     if (innerHeight + scrollTop + 1 >= scrollHeight) {
       setScrollLoading(true);
+      window.scrollBy({ top: 48, behavior: "smooth" });
       setPage((prevPage) => {
         return prevPage + 1;
       });

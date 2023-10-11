@@ -45,7 +45,6 @@ const PokemonDetailsPage = () => {
     );
     if (list.length === 0) {
       setPokemonLoading(false);
-      // navigate("/not-found");
       setPokemonExists(false);
     }
 
