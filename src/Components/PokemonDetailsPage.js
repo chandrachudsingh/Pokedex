@@ -169,6 +169,19 @@ const PokemonDetailsPage = () => {
     }
   };
 
+  const showEvolutionItemName = (e) => {
+    let tooltip = e.target;
+    while (tooltip.nextElementSibling) {
+      if (!tooltip.classList.contains("item_tooltip")) {
+        tooltip = tooltip.nextElementSibling;
+      }
+    }
+    tooltip.classList.add("show-tooltip");
+    setTimeout(() => {
+      tooltip.classList.remove("show-tooltip");
+    }, 2500);
+  };
+
   useEffect(() => {
     getPokemonDetails();
   }, [pokemon_name]);
@@ -366,7 +379,10 @@ const PokemonDetailsPage = () => {
                                           evolution[i + 1].length > 2)) && (
                                         <div className="evolution-method">
                                           {trigger_item && (
-                                            <div className="evolution-item">
+                                            <div
+                                              className="evolution-item"
+                                              onClick={showEvolutionItemName}
+                                            >
                                               <img
                                                 src={trigger_item.img}
                                                 alt=""
@@ -383,13 +399,13 @@ const PokemonDetailsPage = () => {
                                         </div>
                                       )}
                                       <div className="pokemon-evolution">
-                                        <Link
-                                          to={`/pokemon/${name}`}
-                                          className="evolution-img-container"
-                                        >
+                                        <div className="evolution-top-container">
                                           {trigger_item &&
                                             evolution[i].length > 2 && (
-                                              <div className="evolution-item">
+                                              <div
+                                                className="evolution-item"
+                                                onClick={showEvolutionItemName}
+                                              >
                                                 <img
                                                   src={trigger_item.img}
                                                   alt=""
@@ -399,8 +415,13 @@ const PokemonDetailsPage = () => {
                                                 </p>
                                               </div>
                                             )}
-                                          <img src={imgSrc} alt="" />
-                                        </Link>
+                                          <Link
+                                            to={`/pokemon/${name}`}
+                                            className="evolution-img-container"
+                                          >
+                                            <img src={imgSrc} alt="" />
+                                          </Link>
+                                        </div>
                                         <Link
                                           to={`/pokemon/${name}`}
                                           className="pokemon-id"

@@ -2205,21 +2205,31 @@ body {
   text-transform: capitalize;
 }
 
-.evolution-img-container {
+.evolution-top-container {
   background-color: var(--light-blue-clr);
-  border: 6px solid white;
   border-radius: var(--border-radius2);
-  cursor: pointer;
   position: relative;
-  text-align: center;
   height: 200px;
   width: 200px;
 }
 
-.multi-level .evolution-img-container {
-  border: 4px solid white;
+.evolution-img-container {
+  border: 6px solid white;
+  border-radius: var(--border-radius2);
+  display: block;
+  overflow: hidden;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.multi-level .evolution-top-container {
   height: 140px;
   width: 140px;
+}
+
+.multi-level .evolution-img-container {
+  border: 4px solid white;
 }
 
 .pokemon-evolution .evolution-item {
@@ -2339,6 +2349,12 @@ body {
   }
 }
 
+@media (hover: none) {
+  .evolution-item:hover .show-tooltip {
+    visibility: visible;
+  }
+}
+
 .evolution-item img {
   background-color: var(--primary-color-tr2);
   border-radius: var(--border-radius-circular);
@@ -2409,13 +2425,16 @@ body {
     width: 1.75rem;
   }
 
-  .evolution-img-container {
-    border: 4px solid white;
+  .evolution-top-container {
     height: 160px;
     width: 160px;
   }
 
-  .multi-level .evolution-img-container {
+  .evolution-img-container {
+    border: 4px solid white;
+  }
+
+  .multi-level .evolution-top-container {
     height: 120px;
     width: 120px;
   }
@@ -2565,8 +2584,7 @@ body {
     min-width: 100%;
   }
 
-  .evolution-img-container {
-    border: 4px solid white;
+  .evolution-top-container {
     height: 200px;
     width: 200px;
   }
@@ -2653,7 +2671,7 @@ body {
   }
 
   /* pokemon evolution */
-  .two-level .evolution-img-container {
+  .two-level .evolution-top-container {
     height: 140px;
     width: 140px;
   }
@@ -2737,7 +2755,7 @@ body {
     width: 1.5rem;
   }
 
-  .evolution-img-container {
+  .evolution-top-container {
     height: 180px;
     width: 180px;
   }
@@ -2754,7 +2772,7 @@ body {
     font-size: 0.9rem;
   }
 
-  .two-level .evolution-img-container {
+  .two-level .evolution-top-container {
     height: 120px;
     width: 120px;
   }
@@ -2825,10 +2843,13 @@ body {
     column-gap: 0.5rem;
   }
 
-  .two-level .evolution-img-container {
-    border: 3px solid white;
+  .two-level .evolution-top-container {
     height: 110px;
     width: 110px;
+  }
+
+  .two-level .evolution-img-container {
+    border: 3px solid white;
   }
 }
 
