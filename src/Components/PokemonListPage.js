@@ -262,7 +262,6 @@ const PokemonListPage = () => {
 
     if (innerHeight + scrollTop + 1 >= scrollHeight) {
       setScrollLoading(true);
-      window.scrollBy({ top: 48, behavior: "smooth" });
       setPage((prevPage) => {
         return prevPage + 1;
       });
@@ -296,6 +295,12 @@ const PokemonListPage = () => {
   useEffect(() => {
     addNextPage();
   }, [page, pokemons]);
+
+  useEffect(() => {
+    if (scrollLoading) {
+      window.scrollBy({ top: 48, behavior: "smooth" });
+    }
+  }, [scrollLoading]);
 
   return (
     <div className="pokemon-list-page">
